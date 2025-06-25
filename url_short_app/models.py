@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.contrib.auth.models import User
 from core.utils import *
+from ckeditor.fields import RichTextField
 
 
 class BlogCategory(BaseModel):
@@ -17,10 +18,9 @@ class Blog(BaseModel):
     description = models.TextField(help_text="Short summary for listing page")
     content = models.TextField()
     featured_image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
+    content = RichTextField()
     published_date = models.DateTimeField(auto_now_add=True)
     is_published = models.BooleanField(default=True)
-    cta_text = models.CharField(max_length=50, default="Learn More")
-    cta_url = models.URLField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
