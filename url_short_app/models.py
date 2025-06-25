@@ -14,6 +14,9 @@ class BlogCategory(BaseModel):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.title
+
 
 class Blog(BaseModel):
     title = models.CharField(max_length=255)
