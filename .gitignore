@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+*.pyo
+*.pyd
+
+# Virtualenv
+env/
+venv/
+ENV/
+.venv/
+.Python
+
+# Django migrations
+**/migrations/
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Database
+*.db
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Byte-compiled / cache
+.cache/
+*.bak
+*.swp
+
+# Testing
+htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Static & media (optional if served externally)
+staticfiles/
+media/
+
+# Environment variables and secrets
+.env
+*.env
+
+# MyPy
+.mypy_cache/
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
