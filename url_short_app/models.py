@@ -8,7 +8,12 @@ from ckeditor.fields import RichTextField
 
 class BlogCategory(BaseModel):
     title = models.CharField(max_length=255)
-    status = models.CharField(choices=STATUS_CHOICES)
+    slug = models.SlugField(unique=True, blank=True, max_length=255)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
 
 class Blog(BaseModel):
     title = models.CharField(max_length=255)
@@ -20,6 +25,9 @@ class Blog(BaseModel):
     featured_image = models.ImageField(upload_to='blog_images/', null=True, blank=True)
     content = RichTextField()
     published_date = models.DateTimeField(auto_now_add=True)
+    fb_url = models.URLField(max_length=200, null=True, blank=True)
+    twitter_url = models.URLField(max_length=200, null=True, blank=True)
+    linkedin_url = models.URLField(max_length=200, null=True, blank=True)
     is_published = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
