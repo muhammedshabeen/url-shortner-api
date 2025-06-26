@@ -187,14 +187,6 @@ class BlogDetailAPIView(APIView):
     def get_object(self, pk):
         return get_object_or_404(Blog, pk=pk, soft_delete=False)
 
-    def get(self, request, pk):
-        """
-        Retrieve a single blog post by ID.
-        No authentication required.
-        """
-        blog = self.get_object(pk)
-        serializer = BlogSerializer(blog)
-        return Response({"status": 200, "data": serializer.data}, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
         """

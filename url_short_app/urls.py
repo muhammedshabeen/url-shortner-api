@@ -13,4 +13,5 @@ urlpatterns = [
 
     #Blog
     path('blogs/', BlogListCreateAPIView.as_view(), name='blog'),
+     path('blogs/<int:pk>/', BlogDetailAPIView.as_view(), name='blog-detail'),
 ]
