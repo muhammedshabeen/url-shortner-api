@@ -7,7 +7,10 @@ urlpatterns = [
     path('register/', RegisterAPIView.as_view(), name='register'),
     path('login/', LoginAPIView.as_view(), name='login'),
 
-    #Blog
+    #BlogCategory
     path('blog-categories/', BlogCategoryAPIView.as_view(), name='blog-category'),
-    path('blog-categories/<int:pk>', BlogCategoryAPIView.as_view(), name='blog-category'),
+    path('blog-categories/<int:pk>/', BlogCategoryAPIView.as_view(), name='blog-category'),
+
+    #Blog
+    path('blogs/', BlogListCreateAPIView.as_view(), name='blog'),
 ]

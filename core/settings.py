@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'url_short_app',
     'rest_framework',
+    'rest_framework.authtoken',
     'ckeditor',
-    'rest_framework.authtoken'
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -125,9 +126,23 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CKEDITOR_UPLOAD_PATH = "uploads/"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ]
+}
+
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+        'extraPlugins': ','.join(['uploadimage', 'image2']),
+    },
 }
