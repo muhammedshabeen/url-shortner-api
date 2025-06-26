@@ -40,3 +40,55 @@ class Blog(BaseModel):
 
     def __str__(self):
         return self.title
+
+
+class Plan(BaseModel):
+    PLAN_TYPES = (
+        ('FREE', 'Free'),
+        ('PRO', 'Pro'),
+        ('BULK', 'Bulk 100K'),
+        ('ENTERPRISE', 'Enterprise'),
+    )
+    name = models.CharField(max_length=100, choices=PLAN_TYPES, unique=True)
+    price_per_month = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price_per_year = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    custom_pricing = models.BooleanField(default=False)
+    monthly_url_limit = models.PositiveIntegerField(null=True, blank=True)
+    monthly_click_limit = models.PositiveIntegerField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)  # e.g., "500 Links with Unlimited Trackable Clicks"
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.get_name_display()
+    
+
+
+class FeatureCategory(BaseModel):
+    name = models.CharField(max_length=100) 
+
+    def __str__(self):
+        return self.name
+    
+
+class Feature(BaseModel):
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    category = models.ForeignKey(FeatureCategory, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class PlanFeature(BaseModel):
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='plan_features')
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE, related_name='feature_plans')
+    is_available = models.BooleanField(default=False)
+    limit_info = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('plan', 'feature')
+
+    def __str__(self):
+        return f"{self.plan.name} - {self.feature.name}"
+
+
