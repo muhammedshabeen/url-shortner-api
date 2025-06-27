@@ -210,3 +210,35 @@ class BlogDetailAPIView(APIView):
         blog.save()
         return Response({"message": "Blog soft deleted successfully"}, status=status.HTTP_200_OK)
 
+
+
+class PlansAPIView(APIView):
+    def get(self, request):
+        plans = Plan.objects.all().order_by('display_order')
+        result = []
+
+        for plan in plans:
+            pricings = PlanPricing.objects.filter(plan=plan).prefetch_related('feature_values__feature', 'link_volume')
+            serializer = PlanPricingSerializer(pricings, many=True)
+        
+            monthly = []
+            annual = []
+
+            for item in serializer.data:
+                if item['billing_cycle'] == 'annual':
+                    annual.append(item)
+                elif item['billing_cycle'] == 'monthly':
+                    monthly.append(item)
+            
+            result.append({
+                    "plan": plan.name,
+                    "tiers": {
+                        "annual": annual,
+                        "monthly": monthly,
+                    }
+                })
+
+        return Response({
+            "message":"Successfully retrieved plans",
+            "data":result,
+        },status=status.HTTP_200_OK)

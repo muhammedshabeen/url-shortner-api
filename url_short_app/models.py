@@ -59,53 +59,52 @@ class Blog(BaseModel):
         return self.title
 
 
-# class Plan(BaseModel):
-#     PLAN_TYPES = (
-#         ('FREE', 'Free'),
-#         ('PRO', 'Pro'),
-#         ('BULK', 'Bulk 100K'),
-#         ('ENTERPRISE', 'Enterprise'),
-#     )
-#     name = models.CharField(max_length=100, choices=PLAN_TYPES, unique=True)
-#     price_per_month = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-#     price_per_year = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-#     custom_pricing = models.BooleanField(default=False)
-#     monthly_url_limit = models.PositiveIntegerField(null=True, blank=True)
-#     monthly_click_limit = models.PositiveIntegerField(null=True, blank=True)
-#     description = models.TextField(null=True, blank=True)  # e.g., "500 Links with Unlimited Trackable Clicks"
-#     is_active = models.BooleanField(default=True)
-
-#     def __str__(self):
-#         return self.get_name_display()
+class BillingCycle(models.TextChoices):
+    MONTHLY = 'monthly', 'Monthly'
+    ANNUAL = 'annual', 'Annual'
     
+class LinkVolume(models.Model):
+    label = models.CharField(max_length=20)
+    link_count = models.BigIntegerField(null=True, blank=True)
 
-
-# class FeatureCategory(BaseModel):
-#     name = models.CharField(max_length=100) 
-
-#     def __str__(self):
-#         return self.name
     
+    def __str__(self):
+        return self.label
+    
+class Feature(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
 
-# class Feature(BaseModel):
-#     name = models.CharField(max_length=100)
-#     description = models.TextField(null=True, blank=True)
-#     category = models.ForeignKey(FeatureCategory, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
 
-#     def __str__(self):
-#         return self.name
+class Plan(models.Model):
+    name = models.CharField(max_length=100)
+    display_order = models.IntegerField(null=True,blank=True)
 
+    def __str__(self):
+        return self.name
 
-# class PlanFeature(BaseModel):
-#     plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='plan_features')
-#     feature = models.ForeignKey(Feature, on_delete=models.CASCADE, related_name='feature_plans')
-#     is_available = models.BooleanField(default=False)
-#     limit_info = models.CharField(max_length=100, null=True, blank=True)
+class PlanPricing(models.Model):
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
+    link_volume = models.ForeignKey(LinkVolume, on_delete=models.CASCADE,null=True,blank=True)
+    billing_cycle = models.CharField(max_length=10, choices=BillingCycle.choices)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    annual_equivalent_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    description = models.TextField(null=True,blank=True)
 
-#     class Meta:
-#         unique_together = ('plan', 'feature')
+    class Meta:
+        unique_together = ('plan', 'link_volume', 'billing_cycle')
 
-#     def __str__(self):
-#         return f"{self.plan.name} - {self.feature.name}"
+    def __str__(self):
+        return f"{self.plan.name} ({self.link_volume.label if self.link_volume else 'free'}, {self.billing_cycle})"
+    
+class PlanFeatureValue(models.Model):
+    plan_pricing = models.ForeignKey(PlanPricing, on_delete=models.CASCADE, related_name='feature_values')
+    feature = models.ForeignKey(Feature, on_delete=models.CASCADE)
+    value = models.CharField(max_length=100)
 
+    def __str__(self):
+        return f"{self.plan_pricing} - {self.feature.name}: {self.value}"
 
