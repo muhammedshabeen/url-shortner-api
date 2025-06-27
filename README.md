@@ -61,7 +61,7 @@ python manage.py createsuperuser
 
 | Method | URL        | Purpose              | Auth Required |
 |--------|------------|----------------------|---------------|
-| POST   | `/register/` | Register new user    | ❌ No          |
+| POST   | `/register/` | Register new user and get token   | ❌ No          |
 | POST   | `/login/`    | Login and get token  | ❌ No          |
 
 ### Sample Requests
